@@ -7,13 +7,13 @@ export type TodoDocument = Todo & Document;
 export class Todo {
   @Prop({ type: String, required: true })
   text: string;
-  @Prop({ type: Boolean, required: true })
+  @Prop({ type: Boolean, required: false, default: false })
   checked: boolean;
 }
 
 export enum FilterType {
-  All = 'all',
-  Checked = 'checked',
+  ALL = 'All',
+  DONE = 'Done',
 }
 
 export const SchemaTodo = SchemaFactory.createForClass(Todo);

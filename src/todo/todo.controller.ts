@@ -37,7 +37,7 @@ export class TodoController {
     return this.todoService.update(id, updateTodoDto);
   }
 
-  @Delete('group')
+  @Delete('group/:filter')
   removeAllOrChecked(@Param('filter') filter: FilterType, @Query() query: any) {
     return this.todoService.removeToFilter(filter);
   }
