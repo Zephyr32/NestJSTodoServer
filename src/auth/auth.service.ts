@@ -5,12 +5,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import {
   CreateUserDto,
+  LoginUserDto,
+  RegisterLoginReturn,
   User,
   UserDocument,
-  UserDto,
 } from '../users/entities/user.entity';
 import { MailService } from '../mail/mail.service';
 import { UsersService } from '../users/users.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -22,13 +24,8 @@ export class AuthService {
     private usersService: UsersService,
   ) {}
 
-  async registration(userData: CreateUserDto): Promise<{
-    accessToken: string;
-    refreshToken: string;
-    user: UserDto;
-  }> {
+  async registration(userData: CreateUserDto): Promise<RegisterLoginReturn> {
     const candidate = await this.usersService.FindOne(userData.email);
-    console.log('candidate', candidate);
     if (candidate) {
       throw new Error(
         `Пользователь с почтовым адрессом ${userData.email} уже существует`,
@@ -40,13 +37,33 @@ export class AuthService {
 
     await this.mailService.sendUserConfirmation(user, activationLink);
 
-    const tokens = this.generateTokens(user);
+    const tokens = this.generateTokens({ id: user.id, email: user.email });
+
     await this.saveToken(user.id, tokens.refreshToken);
+
     return {
       ...tokens,
-      user: user,
     };
   }
+  async login(userData: LoginUserDto): Promise<RegisterLoginReturn> {
+    const candidate = await this.usersService.FindOne(userData.email);
+    if (!candidate)
+      throw new Error(`Пользователь с таким почтовым адрессом не существует`);
+    const isSame = await bcrypt.compare(userData.password, candidate.password);
+    if (!isSame) throw new Error(`Пароль не верный`);
+    const tokens = this.generateTokens({
+      id: candidate.id,
+      email: candidate.email,
+    });
+    await this.saveToken(candidate.id, tokens.refreshToken);
+    return tokens;
+  }
+  async logout(token) {
+    const data = this.jwtService.decode(token) as { id: string; email: string };
+    if (!data.id) throw new Error(`Токен не существует`);
+    await this.tokenModel.findOneAndDelete({ user: data.id });
+  }
+
   generateTokens(payload): Tokens {
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.jwt_access_secret,

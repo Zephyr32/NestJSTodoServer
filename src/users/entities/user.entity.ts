@@ -49,6 +49,10 @@ export class LoginUserDto {
   @IsNotEmpty()
   password: string;
 }
+export interface RegisterLoginReturn {
+  accessToken: string;
+  refreshToken: string;
+}
 
 export const SchemaUser = SchemaFactory.createForClass(User);
 

@@ -17,7 +17,7 @@ import { MailService } from '../mail/mail.service';
     MongooseModule.forFeature([ModuleUserConnect]),
     JwtModule.registerAsync({
       useFactory: (args: any) => ({
-        secret: process.env.jwt_access_secret,
+        secret: process.env.JWT_ACCESS_SECRET,
         expiresIn: '2h',
       }),
     }),
