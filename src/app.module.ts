@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthGuard } from './auth/auth.guard';
 const password = 'incode2015';
 const connectionString = `mongodb+srv://Bohdan_incode:${password}@bohdancluster.ub7oj.mongodb.net/todo?retryWrites=true&w=majority`;
 
@@ -22,6 +23,8 @@ const connectionString = `mongodb+srv://Bohdan_incode:${password}@bohdancluster.
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+  ],
 })
 export class AppModule {}

@@ -10,6 +10,7 @@ export class Token {
   @Prop({ type: String, required: true })
   refreshToken: string;
 }
+export const REFRESH_TOKEN = 'refreshToken';
 export const SchemaToken = SchemaFactory.createForClass(Token);
 
 export const ModuleTokenConnect = { name: Token.name, schema: SchemaToken };
