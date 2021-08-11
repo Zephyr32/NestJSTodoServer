@@ -18,7 +18,7 @@ import {
 import { MailService } from '../mail/mail.service';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
-import { Response, Request } from 'express';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -70,6 +70,8 @@ export class AuthService {
     await this.tokenModel.findOneAndDelete({ user: data.id });
   }
   async refreshToken(req: Request): Promise<Tokens> {
+    if (!req.cookies[REFRESH_TOKEN])
+      throw new Error('refreshToken exist');
     const data = this.jwtService.decode(req.cookies[REFRESH_TOKEN]) as {
       id: string;
       email: string;

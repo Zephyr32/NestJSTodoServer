@@ -8,14 +8,17 @@ import {
   Delete,
   Query,
   UseGuards,
+  UseFilters,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { FilterType } from './entities/todo.entity';
 import { AuthGuard } from '../auth/auth.guard';
+import { ViewAuthFilter } from '../pipes/catch';
 
 @UseGuards(AuthGuard)
+
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
@@ -26,8 +29,13 @@ export class TodoController {
   }
 
   @Get()
+  // @UseFilters(ViewAuthFilter)
   findAll() {
-    return this.todoService.findAll();
+    try {
+      return this.todoService.findAll();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   @Get(':id')

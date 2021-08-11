@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ModuleTokenConnect } from './entities/token.entity';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { MailModule } from '../mail/mail.module';
 import { ModuleUserConnect } from '../users/entities/user.entity';
 import { UsersModule } from '../users/users.module';

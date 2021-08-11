@@ -64,7 +64,7 @@ export class AuthController {
       return res.status(200).json({ accessToken: tokens.accessToken });
     } catch (e) {
       console.log(e);
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message, 401);
     }
   }
 

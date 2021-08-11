@@ -1,12 +1,9 @@
 import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
+  Injectable, CanActivate, ExecutionContext, HttpException, HttpStatus, UnauthorizedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import * as path from 'path';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -15,12 +12,11 @@ export class AuthGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
-    console.log('requests headers', request.headers);
-    console.log('requests headers', request.headers.authorization);
+    const response = context.switchToHttp().getResponse();
     const bearerToken = request.headers.authorization;
-    if (bearerToken === 'null') {
-      throw new HttpException('', HttpStatus.UNAUTHORIZED);
-      return false;
+    if (bearerToken === 'null' || !bearerToken) {
+      throw new UnauthorizedException();
+      return true;
     }
 
     const token = bearerToken.replace('Bearer ', '');
