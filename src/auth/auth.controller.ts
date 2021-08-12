@@ -45,9 +45,9 @@ export class AuthController {
     @Res() res: Response,
   ) {
     try {
-      const { refreshToken, accessToken } = await this.authService.login(
-        userDto,
-      );
+      const responce = await this.authService.login(userDto);
+      const { refreshToken, accessToken } = responce;
+
       res.cookie(REFRESH_TOKEN, refreshToken, { httpOnly: true });
       console.log(res.cookie);
       return res.status(200).json({ accessToken });
